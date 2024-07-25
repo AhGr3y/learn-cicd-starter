@@ -21,19 +21,16 @@ jobs:
       - name: Build app binary
         run: ./scripts/buildprod.sh
 
-  job_id:
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
-    steps:
-    - id: 'auth'
-      uses: 'google-github-actions/auth@v2'
-      with:
-        credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
 
-    - name: 'Set up Cloud SDK'
-      uses: 'google-github-actions/setup-gcloud@v2'
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
 
-    - name: 'Use gcloud CLI'
-      run: 'gcloud info'
-
-    - name: Build image and push to Artifact Registry
-      run: gcloud builds submit --tag asia-southeast1-docker.pkg.dev/notely-430501/notely-ar-repo/notely:latest
+      - name: Build image and push to Artifact Registry
+        run: gcloud builds submit --tag asia-southeast1-docker.pkg.dev/notely-430501/notely-ar-repo/notely:latest
